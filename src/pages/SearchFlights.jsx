@@ -218,7 +218,7 @@ export default function SearchFlights() {
                       {flight.available_seats} seats left
                     </p>
                     <Link 
-                      to={`/flight/${flight.flight.id}`}
+                      to={`/flight/${flight.flight_id}`}
                       state={{ flight }}
                       className="btn-secondary mt-2 inline-block text-sm px-4 py-1"
                     >

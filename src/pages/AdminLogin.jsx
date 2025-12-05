@@ -9,7 +9,7 @@ export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const { login } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const { showToast, ToastContainer } = useToast();
 
@@ -29,15 +29,23 @@ export default function AdminLogin() {
         password: form.password
       });
 
-      // Store token and user
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('sim_user', JSON.stringify(response.data.user));
+      const userData = {
+        ...response.data.user,
+        token: response.data.access_token
+      };
 
-      login(response.data.user);
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('sim_user', JSON.stringify(userData));
+      
+      // Update AuthContext
+      if (setUser) {
+        setUser(userData);
+      }
+
       showToast("Admin login successful!", "success");
 
       setTimeout(() => {
-        navigate('/admin/flights');
+        window.location.href = '/admin/flights';
       }, 1000);
 
     } catch (error) {
