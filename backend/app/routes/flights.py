@@ -148,11 +148,15 @@ def create_flight():
         import random
         flight_id = f"FL{random.randint(100000, 999999)}"
         
-        # Initialize seats (A1-A6, B1-B6, C1-C6)
+        # Initialize 30 seats (Rows 1-5, Columns A-F)
         seats = {}
-        for row in ['A', 'B', 'C']:
-            for num in range(1, 7):
-                seats[f"{row}{num}"] = {"status": "available"}
+        for row_num in range(1, 6):  # Rows 1-5
+            for col in ['A', 'B', 'C', 'D', 'E', 'F']:  # Columns A-F
+                seat_id = f"{row_num}{col}"  # Format: 1A, 1B, ..., 5F
+                seats[seat_id] = {
+                    "status": "available",
+                    "type": "economy" if row_num > 2 else "business"  # First 2 rows = business
+                }
         
         # Create flight
         flight = Flight(
@@ -179,6 +183,7 @@ def create_flight():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
 
 @flights_bp.route('/<string:flight_id>', methods=['PUT'])
 @jwt_required()
